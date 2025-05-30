@@ -8,6 +8,8 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {List} from './Component/FirstComponent';
+import HomePage from './Component/HomePage';
+import BoxContainer from './Component/MarginBox';
 
 var Component = () => {
   return (
@@ -78,4 +80,4 @@ function App() {
   );
 }
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => HomePage);
