@@ -9,6 +9,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {List} from './Component/FirstComponent';
 import HomePage from './Component/HomePage';
+import NavigatorJump, {Detail} from './Component/NavigatorJump';
+
 import BoxContainer from './Component/MarginBox';
 
 var Component = () => {
@@ -17,11 +19,11 @@ var Component = () => {
       <Text style={styles.textContainer}>Hello, World!</Text>
     </View>
   );
-}
+};
 const Eason = () => {
   return (
     <View style={styles.container}>
-      <Component/>  
+      <Component />
       <Image
         source={{uri: 'https://reactnative.dev/docs/assets/p_cat2.png'}}
         style={styles.image}
@@ -39,13 +41,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   componentContainer: {
-  backgroundColor: '#43CD80', // 葱花绿
-  padding: 20,
-  borderRadius: 10,
-  marginBottom: 10,
-  alignItems: 'center',         // 水平居中
-  justifyContent: 'center',     // 垂直居中
-},
+    backgroundColor: '#43CD80', // 葱花绿
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 10,
+    alignItems: 'center', // 水平居中
+    justifyContent: 'center', // 垂直居中
+  },
   image: {
     width: 100,
     height: 100,
@@ -74,10 +76,19 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="首页" component={HomeScreen} />
+        <Stack.Screen
+          name="Home"
+          component={NavigatorJump}
+          options={{title: '首页'}}
+        />
+        <Stack.Screen
+          name="Detail"
+          component={Detail}
+          options={{title: '详情'}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-AppRegistry.registerComponent(appName, () => HomePage);
+AppRegistry.registerComponent(appName, () => App);
