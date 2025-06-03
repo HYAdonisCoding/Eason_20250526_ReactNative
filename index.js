@@ -2,7 +2,15 @@
  * @format
  */
 
-import {AppRegistry, StyleSheet, Text, View, Image} from 'react-native';
+import {
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import {name as appName} from './app.json';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -10,7 +18,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {List} from './Component/FirstComponent';
 import HomePage from './Component/HomePage';
 import NavigatorJump, {Detail} from './Component/NavigatorJump';
-
+import SearchView, {SearchHeader} from './Component/SearchView';
 import BoxContainer from './Component/MarginBox';
 
 var Component = () => {
@@ -79,12 +87,29 @@ function App() {
         <Stack.Screen
           name="Home"
           component={NavigatorJump}
-          options={{title: '首页'}}
+          options={({navigation}) => ({
+            title: '首页',
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Search')}
+                style={{marginRight: 16}}>
+                <Text style={{fontSize: 16, color: '#007AFF'}}>搜索</Text>
+              </TouchableOpacity>
+            ),
+          })}
         />
         <Stack.Screen
           name="Detail"
           component={Detail}
           options={{title: '详情'}}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchView}
+          options={{
+            headerTitle: () => <SearchHeader />,
+            headerTitleAlign: 'center',
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
