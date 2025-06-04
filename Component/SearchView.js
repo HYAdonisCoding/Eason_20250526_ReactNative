@@ -92,9 +92,150 @@ function SearchHeader({value = '', setValue, canSearch, onSearch}) {
   );
 }
 
+// 图片组件
+// 图片相关
+// --- 组件外部 ---
+const localImages = {
+  '飞龙在天1.jpeg': require('../assets/飞龙在天1.jpeg'),
+  '飞龙在天2.jpeg': require('../assets/飞龙在天2.jpeg'),
+  '飞龙在天3.jpeg': require('../assets/飞龙在天3.jpeg'),
+};
+
+const MyLocalImage = ({imgsLocalName}) => {
+  const imgSource = localImages[imgsLocalName];
+  if (!imgSource) {
+    return (
+      <View
+        style={[
+          styles.image,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <Text style={{color: '#999'}}>图片未找到</Text>
+      </View>
+    );
+  }
+  return (
+    <Image
+      source={imgSource}
+      resizeMode="contain"
+      style={styles.image}
+      accessibilityLabel="搜索结果图片"
+    />
+  );
+};
+
+const LocalImgView = React.memo(
+  ({imgsLocal, imgIndexLocal, prevImgLocal, nextImgLocal}) => {
+    const hasImages = imgsLocal && imgsLocal.length > 0;
+    const currentImgName = hasImages ? imgsLocal[imgIndexLocal] : null;
+    return (
+      <View style={{alignItems: 'center'}}>
+        {hasImages ? (
+          <MyLocalImage imgsLocalName={currentImgName} />
+        ) : (
+          <View style={[styles.image, {justifyContent: 'center', alignItems: 'center'}]}>
+            <Text style={{color: '#999'}}>暂无图片</Text>
+          </View>
+        )}
+        <View style={{width: '100%', alignItems: 'center'}}>
+          <Text style={{color: '#888', fontSize: 14, marginBottom: 4}}>
+            {hasImages ? `${imgIndexLocal + 1} / ${imgsLocal.length}` : '0 / 0'}
+          </Text>
+          <View style={styles.bottomBar}>
+            <TouchableHighlight
+              onPress={prevImgLocal}
+              underlayColor={'#005BBB'}
+              activeOpacity={0.8}
+              style={[styles.bottomBarItem, {backgroundColor: '#007AFF'}]}
+              disabled={!hasImages || imgsLocal.length === 1}>
+              <Text style={{color: '#fff', fontSize: 18}}>上一张</Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={nextImgLocal}
+              underlayColor={'#388E3C'}
+              activeOpacity={0.8}
+              style={[styles.bottomBarItem, {backgroundColor: '#4CAF50'}]}
+              disabled={!hasImages || imgsLocal.length === 1}>
+              <Text style={{color: '#fff', fontSize: 18}}>下一张</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </View>
+    );
+  }
+);
+
+const NetworkImgView = React.memo(({imgs, imgIndex, prevImg, nextImg}) => {
+  const hasImages = imgs && imgs.length > 0;
+  const currentImg = hasImages ? imgs[imgIndex] : null;
+  const [imgError, setImgError] = React.useState(false);
+
+  return (
+    <View style={{alignItems: 'center'}}>
+      {hasImages ? (
+        <Image
+          source={{uri: currentImg}}
+          resizeMode="contain"
+          style={styles.image}
+          accessibilityLabel="网络图片"
+          onError={() => setImgError(true)}
+          onLoadStart={() => setImgError(false)}
+        />
+      ) : (
+        <View
+          style={[
+            styles.image,
+            {justifyContent: 'center', alignItems: 'center'},
+          ]}>
+          <Text style={{color: '#999'}}>暂无图片</Text>
+        </View>
+      )}
+      {imgError && (
+        <Text style={{color: 'red', marginTop: 8}}>图片加载失败</Text>
+      )}
+      <View style={{width: '100%', alignItems: 'center'}}>
+        <Text style={{color: '#888', fontSize: 14, marginBottom: 4}}>
+          {hasImages ? `${imgIndex + 1} / ${imgs.length}` : '0 / 0'}
+        </Text>
+        <View style={styles.bottomBar}>
+          <TouchableHighlight
+            onPress={prevImg}
+            underlayColor={'#005BBB'}
+            activeOpacity={0.8}
+            style={[styles.bottomBarItem, {backgroundColor: '#007AFF'}]}
+            disabled={!hasImages || imgs.length === 1}>
+            <Text style={{color: '#fff', fontSize: 18}}>上一张</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={nextImg}
+            underlayColor={'#388E3C'}
+            activeOpacity={0.8}
+            style={[styles.bottomBarItem, {backgroundColor: '#4CAF50'}]}
+            disabled={!hasImages || imgs.length === 1}>
+            <Text style={{color: '#fff', fontSize: 18}}>下一张</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+    </View>
+  );
+});
+
 function SearchView({navigation, route}) {
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [imgIndex, setImgIndex] = useState(0);
+  const [imgIndexLocal, setImgIndexLocal] = useState(0);
+  const prevImgLocal = () =>
+    setImgIndexLocal(idx => (idx - 1 + imgsLocal.length) % imgsLocal.length);
+  const nextImgLocal = () =>
+    setImgIndexLocal(idx => (idx + 1) % imgsLocal.length);
+
+  const imgs = [
+    'https://reactnative.dev/img/tiny_logo.png',
+    'https://reactnative.dev/docs/assets/p_cat2.png',
+    'https://avatars.githubusercontent.com/u/17538734?v=4',
+  ];
+  const imgsLocal = ['飞龙在天1.jpeg', '飞龙在天2.jpeg', '飞龙在天3.jpeg'];
   const mockSuggestions = [
     'React Native',
     'React',
@@ -156,14 +297,6 @@ function SearchView({navigation, route}) {
     });
   }, [navigation, value, canSearch]);
 
-  // 图片相关
-  const imgs = [
-    'https://reactnative.dev/img/tiny_logo.png',
-    'https://reactnative.dev/docs/assets/p_cat2.png',
-    'https://avatars.githubusercontent.com/u/17538734?v=4',
-  ];
-  const [imgIndex, setImgIndex] = useState(0);
-
   // 监听输入变化，生成建议
   React.useEffect(() => {
     const all = mockSuggestions
@@ -178,24 +311,7 @@ function SearchView({navigation, route}) {
     }
     setSuggestions(all);
   }, [value]);
-  // 图片组件
-  const MyImage = ({uri}) => (
-    <Image
-      source={{uri: uri}}
-      resizeMode='contain'
-      style={styles.image}
-      accessibilityLabel="搜索结果图片"
-    />
-  );
 
-  // 上一张
-  const prevImg = () => {
-    setImgIndex(idx => (idx - 1 + imgs.length) % imgs.length);
-  };
-  // 下一张
-  const nextImg = () => {
-    setImgIndex(idx => (idx + 1) % imgs.length);
-  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
@@ -215,24 +331,21 @@ function SearchView({navigation, route}) {
             />
           </View>
         )}
-        <MyImage uri={imgs[imgIndex]} />
-
-        <View style={styles.bottomBar}>
-          <TouchableHighlight
-            onPress={() => prevImg()}
-            underlayColor={'#222'}
-            activeOpacity={10}
-            style={styles.bottomBarItem}>
-            <Text style={{color: '#fff', fontSize: 18}}>上一张 </Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={() => nextImg()}
-            underlayColor={'#222'}
-            activeOpacity={10}
-            style={styles.bottomBarItem}>
-            <Text style={{color: '#fff', fontSize: 18}}>下一张 </Text>
-          </TouchableHighlight>
-        </View>
+        {/* // SearchView 组件内部 */}
+        <LocalImgView
+          imgsLocal={imgsLocal}
+          imgIndexLocal={imgIndexLocal}
+          prevImgLocal={prevImgLocal}
+          nextImgLocal={nextImgLocal}
+        />
+        <NetworkImgView
+          imgs={imgs}
+          imgIndex={imgIndex}
+          prevImg={() =>
+            setImgIndex(idx => (idx - 1 + imgs.length) % imgs.length)
+          }
+          nextImg={() => setImgIndex(idx => (idx + 1) % imgs.length)}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -240,26 +353,33 @@ function SearchView({navigation, route}) {
 
 const styles = StyleSheet.create({
   image: {
-    width: 300,
+    width: '100%', // 保证图片宽度自适应父容器
     height: 200,
     borderRadius: 10,
-    marginTop: 20,
-    alignSelf: 'center',
     borderWidth: 1,
-        borderColor: '#ccc',
+    borderColor: '#ccc',
+    marginTop: 16,
+    marginBottom: 10,
+    marginHorizontal: 10, // 两侧间距
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'stretch', // 让子元素撑满宽度
+    paddingHorizontal: 10, // 控制所有内容两侧间距
   },
   bottomBar: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between', // 两端对齐
-    width: 240, // 或 '100%'，根据你的页面宽度调整
+    width: '100%', // 或 '100%'，根据你的页面宽度调整
     alignSelf: 'center',
+    backgroundColor: '#f0f0f0',
   },
   bottomBarItem: {
-    backgroundColor: '#4c4c4c',
+    backgroundColor: '#007AFF',
     padding: 10,
     borderRadius: 5,
-    marginTop: 20,
     width: '45%', // 每个按钮占据一半宽度
     alignItems: 'center',
   },
@@ -282,12 +402,7 @@ const styles = StyleSheet.create({
     marginTop: 0, // 让建议框紧贴导航栏
     alignSelf: 'center',
   },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    // paddingTop: 16, // 去掉或设为0
-  },
+
   suggestionItem: {
     paddingVertical: 8,
     paddingHorizontal: 16,
