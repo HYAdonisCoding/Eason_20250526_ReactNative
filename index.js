@@ -20,6 +20,7 @@ import HomePage from './Component/HomePage';
 import NavigatorJump, {Detail} from './Component/NavigatorJump';
 import SearchView, {SearchHeader} from './Component/SearchView';
 import BoxContainer from './Component/MarginBox';
+import TabBar from './Component/TabBar';
 
 var Component = () => {
   return (
@@ -116,4 +117,4 @@ function App() {
   );
 }
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => TabBar);
