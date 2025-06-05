@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import {name as appName} from './app.json';
 import React from 'react';
@@ -21,6 +22,7 @@ import NavigatorJump, {Detail} from './Component/NavigatorJump';
 import SearchView, {SearchHeader} from './Component/SearchView';
 import BoxContainer from './Component/MarginBox';
 import TabBar from './Component/TabBar';
+import {CartProvider} from './Component/ShoppingCartView';
 
 var Component = () => {
   return (
@@ -81,7 +83,7 @@ function HomeScreen() {
   return <List />;
 }
 
-function App() {
+function nav() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -117,4 +119,27 @@ function App() {
   );
 }
 
-AppRegistry.registerComponent(appName, () => TabBar);
+function App() {
+  return (
+    <CartProvider>
+      <NavigationContainer>
+        <TabBar />
+      </NavigationContainer>
+    </CartProvider>
+  );
+}
+// AppRegistry
+// AppRegistry.registerRunnable('vczero', () => {
+//   console.log('vczero');
+//   return <App />;
+// });
+
+// AppRegistry.registerRunnable('react-native', () => {
+//   console.log('react-native');
+//   return <App />;
+// });
+
+// console.log(AppRegistry.runApplication); // 控制台输出
+// Alert.alert('AppKeys', AppRegistry.getAppKeys().join('\n'));
+// Alert.alert('信息', String(AppRegistry.runApplication));
+AppRegistry.registerComponent(appName, () => App);

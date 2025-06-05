@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,10 @@ import SearchView, {SearchHeader} from './SearchView';
 import NewsSearchView from './NewsSearchView';
 import NewsMinePage from './NewsMinePage';
 import MessagePage from './MessagePage';
+import ShoppingCartView from './ShoppingCartView';
+import ShoppingView from './ShoppingView';
+import { CartProvider, CartContext } from './ShoppingCartView';
+import { useNavigationState } from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height - 70;
@@ -63,6 +67,13 @@ function HomeStack() {
 }
 
 const TabBar = () => {
+  const { cartCount,cartBadgeVisible } = useContext(CartContext);
+  // 获取当前tab路由名
+  const navigationState = useNavigationState(state => state);
+const currentRouteName =
+  navigationState && navigationState.routes
+    ? navigationState.routes[navigationState.index].name
+    : '';
   const getInitialState = () => {
     return {
       selectedTab: 'home',
@@ -72,7 +83,7 @@ const TabBar = () => {
     this.setState({selectedTab: tabName});
   };
   return (
-    <NavigationContainer>
+    
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#aa7AFF', // 选中时文字颜色
@@ -125,7 +136,7 @@ const TabBar = () => {
           }}
         />
 
-        <Tab.Screen
+        {/* <Tab.Screen
           name="搜索"
           component={SearchView}
           options={{
@@ -147,6 +158,53 @@ const TabBar = () => {
               />
             ),
             tabBarLabel: '搜索',
+          }}
+        /> */}
+
+        <Tab.Screen
+          name="浏览"
+          component={ShoppingView}
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <Image
+                source={
+                  focused
+                    ? require('../assets/sparkles.tv.fill.png')
+                    : require('../assets/sparkles.tv.png')
+                }
+                style={{
+                  width: size ?? 24,
+                  height: size ?? 24,
+                  tintColor: color, // 图标颜色也跟随文字
+                }}
+                resizeMode="contain" // 关键：完整显示图片
+              />
+            ),
+            tabBarLabel: '浏览',
+          }}
+        />
+
+        <Tab.Screen
+          name="购物车"
+          component={ShoppingCartView}
+          options={{
+            tabBarBadge: cartBadgeVisible && cartCount > 0 ? cartCount : undefined,
+            tabBarIcon: ({focused, color, size}) => (
+              <Image
+                source={
+                  focused
+                    ? require('../assets/cart.badge.clock.fill.png')
+                    : require('../assets/cart.badge.clock.png')
+                }
+                style={{
+                  width: size ?? 24,
+                  height: size ?? 24,
+                  tintColor: color, // 图标颜色也跟随文字
+                }}
+                resizeMode="contain" // 关键：完整显示图片
+              />
+            ),
+            tabBarLabel: '购物车',
           }}
         />
 
@@ -173,7 +231,7 @@ const TabBar = () => {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    
   );
 };
 
