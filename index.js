@@ -23,6 +23,7 @@ import SearchView, {SearchHeader} from './Component/SearchView';
 import BoxContainer from './Component/MarginBox';
 import TabBar from './Component/TabBar';
 import {CartProvider} from './Component/ShoppingCartView';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 
 var Component = () => {
   return (
@@ -121,11 +122,13 @@ function nav() {
 
 function App() {
   return (
-    <CartProvider>
-      <NavigationContainer>
-        <TabBar />
-      </NavigationContainer>
-    </CartProvider>
+    <ActionSheetProvider>
+      <CartProvider>
+        <NavigationContainer>
+          <TabBar />
+        </NavigationContainer>
+      </CartProvider>
+    </ActionSheetProvider>
   );
 }
 // AppRegistry

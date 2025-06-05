@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import {
   View,
   Text,
@@ -18,8 +18,8 @@ import NewsMinePage from './NewsMinePage';
 import MessagePage from './MessagePage';
 import ShoppingCartView from './ShoppingCartView';
 import ShoppingView from './ShoppingView';
-import { CartProvider, CartContext } from './ShoppingCartView';
-import { useNavigationState } from '@react-navigation/native';
+import {CartProvider, CartContext} from './ShoppingCartView';
+import {useNavigationState} from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height - 70;
@@ -39,16 +39,28 @@ function HomeStack() {
         component={NewsHomePage}
         options={({navigation}) => ({
           headerRight: () => (
-            <TouchableOpacity
-              style={{marginLeft: 16}}
-              onPress={() => {
-                navigation.getParent()?.setOptions({
-                  tabBarStyle: {display: 'none'},
-                });
-                navigation.navigate('新浪微博');
-              }}>
-              <Text style={{fontSize: 16, color: '#aa7AFF'}}>微博</Text>
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <TouchableOpacity
+                style={{marginRight: 16}}
+                onPress={() => {
+                  navigation.getParent()?.setOptions({
+                    tabBarStyle: {display: 'none'},
+                  });
+                  navigation.navigate('搜索');
+                }}>
+                <Text style={{fontSize: 16, color: '#aa7AFF'}}>搜索</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{marginLeft: 0}}
+                onPress={() => {
+                  navigation.getParent()?.setOptions({
+                    tabBarStyle: {display: 'none'},
+                  });
+                  navigation.navigate('新浪微博');
+                }}>
+                <Text style={{fontSize: 16, color: '#aa7AFF'}}>微博</Text>
+              </TouchableOpacity>
+            </View>
           ),
         })}
       />
@@ -62,18 +74,19 @@ function HomeStack() {
           //   presentation: 'push', // push\modal 或 'fullScreenModal'
         }}
       />
+      <Stack.Screen name="搜索" component={SearchView} />
     </Stack.Navigator>
   );
 }
 
 const TabBar = () => {
-  const { cartCount,cartBadgeVisible } = useContext(CartContext);
+  const {cartCount, cartBadgeVisible} = useContext(CartContext);
   // 获取当前tab路由名
   const navigationState = useNavigationState(state => state);
-const currentRouteName =
-  navigationState && navigationState.routes
-    ? navigationState.routes[navigationState.index].name
-    : '';
+  const currentRouteName =
+    navigationState && navigationState.routes
+      ? navigationState.routes[navigationState.index].name
+      : '';
   const getInitialState = () => {
     return {
       selectedTab: 'home',
@@ -83,60 +96,59 @@ const currentRouteName =
     this.setState({selectedTab: tabName});
   };
   return (
-    
-      <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: '#aa7AFF', // 选中时文字颜色
-          tabBarInactiveTintColor: '#888', // 未选中时文字颜色
-        }}>
-        <Tab.Screen
-          name="首页Tab"
-          component={HomeStack}
-          options={{
-            headerShown: false,
-            tabBarIcon: ({focused, color, size}) => (
-              <Image
-                source={
-                  focused
-                    ? require('../assets/house.fill.png')
-                    : require('../assets/house.png')
-                }
-                style={{
-                  width: size ?? 24,
-                  height: size ?? 24,
-                  tintColor: color, // 图标颜色也跟随文字
-                }}
-                resizeMode="contain" // 关键：完整显示图片
-              />
-            ),
-            tabBarLabel: '首页',
-          }}
-        />
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#aa7AFF', // 选中时文字颜色
+        tabBarInactiveTintColor: '#888', // 未选中时文字颜色
+      }}>
+      <Tab.Screen
+        name="首页Tab"
+        component={HomeStack}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({focused, color, size}) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/house.fill.png')
+                  : require('../assets/house.png')
+              }
+              style={{
+                width: size ?? 24,
+                height: size ?? 24,
+                tintColor: color, // 图标颜色也跟随文字
+              }}
+              resizeMode="contain" // 关键：完整显示图片
+            />
+          ),
+          tabBarLabel: '首页',
+        }}
+      />
 
-        <Tab.Screen
-          name="消息"
-          component={MessagePage}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <Image
-                source={
-                  focused
-                    ? require('../assets/message.fill.png')
-                    : require('../assets/message.png')
-                }
-                style={{
-                  width: size ?? 24,
-                  height: size ?? 24,
-                  tintColor: color, // 图标颜色也跟随文字
-                }}
-                resizeMode="contain" // 关键：完整显示图片
-              />
-            ),
-            tabBarLabel: '消息',
-          }}
-        />
+      <Tab.Screen
+        name="消息"
+        component={MessagePage}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/message.fill.png')
+                  : require('../assets/message.png')
+              }
+              style={{
+                width: size ?? 24,
+                height: size ?? 24,
+                tintColor: color, // 图标颜色也跟随文字
+              }}
+              resizeMode="contain" // 关键：完整显示图片
+            />
+          ),
+          tabBarLabel: '消息',
+        }}
+      />
 
-        {/* <Tab.Screen
+      {/* <Tab.Screen
           name="搜索"
           component={SearchView}
           options={{
@@ -161,77 +173,77 @@ const currentRouteName =
           }}
         /> */}
 
-        <Tab.Screen
-          name="浏览"
-          component={ShoppingView}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <Image
-                source={
-                  focused
-                    ? require('../assets/sparkles.tv.fill.png')
-                    : require('../assets/sparkles.tv.png')
-                }
-                style={{
-                  width: size ?? 24,
-                  height: size ?? 24,
-                  tintColor: color, // 图标颜色也跟随文字
-                }}
-                resizeMode="contain" // 关键：完整显示图片
-              />
-            ),
-            tabBarLabel: '浏览',
-          }}
-        />
+      <Tab.Screen
+        name="浏览"
+        component={ShoppingView}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/sparkles.tv.fill.png')
+                  : require('../assets/sparkles.tv.png')
+              }
+              style={{
+                width: size ?? 24,
+                height: size ?? 24,
+                tintColor: color, // 图标颜色也跟随文字
+              }}
+              resizeMode="contain" // 关键：完整显示图片
+            />
+          ),
+          tabBarLabel: '浏览',
+        }}
+      />
 
-        <Tab.Screen
-          name="购物车"
-          component={ShoppingCartView}
-          options={{
-            tabBarBadge: cartBadgeVisible && cartCount > 0 ? cartCount : undefined,
-            tabBarIcon: ({focused, color, size}) => (
-              <Image
-                source={
-                  focused
-                    ? require('../assets/cart.badge.clock.fill.png')
-                    : require('../assets/cart.badge.clock.png')
-                }
-                style={{
-                  width: size ?? 24,
-                  height: size ?? 24,
-                  tintColor: color, // 图标颜色也跟随文字
-                }}
-                resizeMode="contain" // 关键：完整显示图片
-              />
-            ),
-            tabBarLabel: '购物车',
-          }}
-        />
+      <Tab.Screen
+        name="购物车"
+        component={ShoppingCartView}
+        options={{
+          tabBarBadge:
+            cartBadgeVisible && cartCount > 0 ? cartCount : undefined,
+          tabBarIcon: ({focused, color, size}) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/cart.badge.clock.fill.png')
+                  : require('../assets/cart.badge.clock.png')
+              }
+              style={{
+                width: size ?? 24,
+                height: size ?? 24,
+                tintColor: color, // 图标颜色也跟随文字
+              }}
+              resizeMode="contain" // 关键：完整显示图片
+            />
+          ),
+          tabBarLabel: '购物车',
+        }}
+      />
 
-        <Tab.Screen
-          name="我的"
-          component={NewsMinePage}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <Image
-                source={
-                  focused
-                    ? require('../assets/person.fill.png')
-                    : require('../assets/person.png')
-                }
-                style={{
-                  width: size ?? 24,
-                  height: size ?? 24,
-                  tintColor: color, // 图标颜色也跟随文字
-                }}
-                resizeMode="contain" // 关键：完整显示图片
-              />
-            ),
-            tabBarLabel: '我的',
-          }}
-        />
-      </Tab.Navigator>
-    
+      <Tab.Screen
+        name="我的"
+        component={NewsMinePage}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/person.fill.png')
+                  : require('../assets/person.png')
+              }
+              style={{
+                width: size ?? 24,
+                height: size ?? 24,
+                tintColor: color, // 图标颜色也跟随文字
+              }}
+              resizeMode="contain" // 关键：完整显示图片
+            />
+          ),
+          tabBarLabel: '我的',
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,10 @@ import {
   Alert,
   Image,
 } from 'react-native';
+import {saveImageToCameraRoll} from '../utils/CameraRollUtil';
+import { SCREEN_WIDTH } from '../utils/ScreenUtil';
+
+
 
 function SearchHeader({value = '', setValue, canSearch, onSearch}) {
   return (
@@ -115,12 +119,28 @@ const MyLocalImage = ({imgsLocalName}) => {
     );
   }
   return (
-    <Image
-      source={imgSource}
-      resizeMode="contain"
-      style={styles.image}
-      accessibilityLabel="搜索结果图片"
-    />
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onLongPress={() => {
+        Alert.alert('保存图片', '是否保存该图片到相册？', [
+          {text: '取消', style: 'cancel'},
+          {
+            text: '确定',
+            onPress: () => {
+              console.log('currentImg net', Image.resolveAssetSource(imgSource).uri);
+              // 本地图片需先获取真实路径
+              saveImageToCameraRoll(Image.resolveAssetSource(imgSource).uri);
+            },
+          },
+        ]);
+      }}>
+      <Image
+        source={imgSource}
+        resizeMode="contain"
+        style={styles.image}
+        accessibilityLabel="搜索结果图片"
+      />
+    </TouchableOpacity>
   );
 };
 
@@ -133,7 +153,11 @@ const LocalImgView = React.memo(
         {hasImages ? (
           <MyLocalImage imgsLocalName={currentImgName} />
         ) : (
-          <View style={[styles.image, {justifyContent: 'center', alignItems: 'center'}]}>
+          <View
+            style={[
+              styles.image,
+              {justifyContent: 'center', alignItems: 'center'},
+            ]}>
             <Text style={{color: '#999'}}>暂无图片</Text>
           </View>
         )}
@@ -162,7 +186,7 @@ const LocalImgView = React.memo(
         </View>
       </View>
     );
-  }
+  },
 );
 
 const NetworkImgView = React.memo(({imgs, imgIndex, prevImg, nextImg}) => {
@@ -173,14 +197,30 @@ const NetworkImgView = React.memo(({imgs, imgIndex, prevImg, nextImg}) => {
   return (
     <View style={{alignItems: 'center'}}>
       {hasImages ? (
-        <Image
-          source={{uri: currentImg}}
-          resizeMode="contain"
-          style={styles.image}
-          accessibilityLabel="网络图片"
-          onError={() => setImgError(true)}
-          onLoadStart={() => setImgError(false)}
-        />
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onLongPress={() => {
+            Alert.alert('保存图片', '是否保存该图片到相册？', [
+              {text: '取消', style: 'cancel'},
+              {
+                text: '确定',
+                onPress: () => {
+                  console.log('currentImg net', currentImg);
+                  
+                  saveImageToCameraRoll(currentImg);
+                },
+              },
+            ]);
+          }}>
+          <Image
+            source={{uri: currentImg}}
+            resizeMode="contain"
+            style={styles.image}
+            accessibilityLabel="网络图片"
+            onError={() => setImgError(true)}
+            onLoadStart={() => setImgError(false)}
+          />
+        </TouchableOpacity>
       ) : (
         <View
           style={[
@@ -221,6 +261,14 @@ const NetworkImgView = React.memo(({imgs, imgIndex, prevImg, nextImg}) => {
 });
 
 function SearchView({navigation, route}) {
+  useLayoutEffect(() => {
+    // 返回时恢复TabBar
+    return () => {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+    };
+  }, [navigation]);
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [imgIndex, setImgIndex] = useState(0);
@@ -353,7 +401,7 @@ function SearchView({navigation, route}) {
 
 const styles = StyleSheet.create({
   image: {
-    width: '100%', // 保证图片宽度自适应父容器
+    width: SCREEN_WIDTH - 40, // 保证图片宽度自适应父容器
     height: 200,
     borderRadius: 10,
     borderWidth: 1,
