@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  TouchableOpacity,
   Image,
   Dimensions,
 } from 'react-native';
@@ -12,6 +13,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import NewsHomePage, {Detail} from './NavigatorJump';
 import SearchView, {SearchHeader} from './SearchView';
+import NewsSearchView from './NewsSearchView';
+import NewsMinePage from './NewsMinePage';
+import MessagePage from './MessagePage';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height - 70;
@@ -20,12 +24,39 @@ const Stack = createNativeStackNavigator();
 
 function HomeStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="首页" component={NewsHomePage} />
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: '#aa7AFF', // 统一返回按钮和标题颜色
+        // 你还可以统一设置标题样式
+        headerTitleStyle: {color: '#aa7AFF'},
+      }}>
       <Stack.Screen
-        name="Detail"
-        component={Detail}
-        
+        name="首页"
+        component={NewsHomePage}
+        options={({navigation}) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              style={{marginLeft: 16}}
+              onPress={() => {
+                navigation.getParent()?.setOptions({
+                  tabBarStyle: {display: 'none'},
+                });
+                navigation.navigate('新浪微博');
+              }}>
+              <Text style={{fontSize: 16, color: '#aa7AFF'}}>微博</Text>
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen name="Detail" component={Detail} />
+      <Stack.Screen
+        name="新浪微博"
+        component={NewsSearchView}
+        options={{
+          title: '新浪微博',
+          headerTitleAlign: 'center',
+          //   presentation: 'push', // push\modal 或 'fullScreenModal'
+        }}
       />
     </Stack.Navigator>
   );
@@ -48,7 +79,7 @@ const TabBar = () => {
           tabBarInactiveTintColor: '#888', // 未选中时文字颜色
         }}>
         <Tab.Screen
-          name="首页"
+          name="首页Tab"
           component={HomeStack}
           options={{
             headerShown: false,
@@ -73,7 +104,7 @@ const TabBar = () => {
 
         <Tab.Screen
           name="消息"
-          component={() => <Text>消息</Text>}
+          component={MessagePage}
           options={{
             tabBarIcon: ({focused, color, size}) => (
               <Image
@@ -121,7 +152,7 @@ const TabBar = () => {
 
         <Tab.Screen
           name="我的"
-          component={() => <Text>我的</Text>}
+          component={NewsMinePage}
           options={{
             tabBarIcon: ({focused, color, size}) => (
               <Image
