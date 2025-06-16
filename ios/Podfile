@@ -16,8 +16,8 @@ end
 
 target 'Eason_20250526_ReactNative' do
   config = use_native_modules!
-  pod 'AMapLocation', '~> 2.6.4'
-  pod 'AMapSearch', '~> 6.5.0'
+  pod 'AMapLocation', '~> 2.10.0'
+  pod 'AMapSearch', '~> 9.7.4'
 
   use_react_native!(
     :path => config[:reactNativePath],

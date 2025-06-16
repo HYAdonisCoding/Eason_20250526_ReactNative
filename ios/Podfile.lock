@@ -2,6 +2,10 @@ PODS:
   - AMap3DMap (9.6.2):
     - AMapFoundation (>= 1.8.0)
   - AMapFoundation (1.8.2)
+  - AMapLocation (2.10.0):
+    - AMapFoundation (>= 1.8.0)
+  - AMapSearch (9.7.4):
+    - AMapFoundation (>= 1.8.0)
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
@@ -1386,6 +1390,30 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-document-picker (9.3.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-geolocation (3.4.0):
     - DoubleConversion
     - glog
@@ -1967,6 +1995,8 @@ PODS:
   - Yoga (0.0.0)
 
 DEPENDENCIES:
+  - AMapLocation
+  - AMapSearch
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -2010,6 +2040,7 @@ DEPENDENCIES:
   - react-native-amap3d (from `../node_modules/react-native-amap3d`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-compressor (from `../node_modules/react-native-compressor`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -2057,6 +2088,8 @@ SPEC REPOS:
   trunk:
     - AMap3DMap
     - AMapFoundation
+    - AMapLocation
+    - AMapSearch
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -2143,6 +2176,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
   react-native-compressor:
     :path: "../node_modules/react-native-compressor"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-geolocation-service:
@@ -2231,6 +2266,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AMap3DMap: 1d24615b754c2ac5a92258b59729e60a6d478205
   AMapFoundation: 9885c48fc3a78fdfb84a0299a2293e56ea3c9fec
+  AMapLocation: 5248aec2455ebb5d104b367813c946430a2ee033
+  AMapSearch: a30e89212f55a867ac951ce71f800313cd54ad0a
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
@@ -2272,6 +2309,7 @@ SPEC CHECKSUMS:
   react-native-amap3d: 5d7ca88ba2d440169e5cf3c101547cac0ac73a6a
   react-native-cameraroll: a3087d488f91fb4494fe642f4b616d22f70272c9
   react-native-compressor: ab0b2b69ed401ed62cbbfe71b46aecabe02316cf
+  react-native-document-picker: ba3181e6ec97907f9266f2dbe16c0e5ce18ebb95
   react-native-geolocation: d43962eb0be1b0056ba5c1f95e94fb7907494268
   react-native-geolocation-service: 32b2c2a3b91e70ce2a8d0c684801aaeb0a07e0ec
   react-native-image-picker: db0b3e3c7ae57680876318d4f42e7dbedd72244a
@@ -2316,6 +2354,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: c758bfb934100bb4bf9cbaccb52557cee35e8bdf
 
-PODFILE CHECKSUM: 5f53b3b6a7942cf2810e036f6c796b21814af479
+PODFILE CHECKSUM: 582bdbafb433b7f34d2e2950f7621dc2cc48d196
 
 COCOAPODS: 1.15.2
