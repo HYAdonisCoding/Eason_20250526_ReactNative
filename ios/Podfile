@@ -1,37 +1,51 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+# Podfile 开头
+source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, min_ios_version_supported
+ENV['HERMES_ENGINE_TARBALL'] = '0'  # 禁用 Hermes 预构建包，优先源码构建
+
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+
+platform :ios, '15.0'
 prepare_react_native_project!
 
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
-end
+#linkage = ENV['USE_FRAMEWORKS']
+#if linkage
+#  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+#  use_frameworks! linkage.to_sym
+#end
+
+inhibit_all_warnings!
 
 target 'Eason_20250526_ReactNative' do
   config = use_native_modules!
-  pod 'AMapLocation', '~> 2.10.0'
-  pod 'AMapSearch', '~> 9.7.4'
-
+  
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    :hermes_enabled => true # 显式启用 Hermes，确保与 ENV 配置一致
   )
-
-  post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
-    )
-  end
+                    
+                    pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+                    
+                    post_install do |installer|
+                      installer.pods_project.targets.each do |target|
+                        next unless target.respond_to?(:build_configurations)
+                        target.build_configurations.each do |config|
+                          config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+                          # 针对某个 Pod 单独配置
+                          
+                          config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+                          config.build_settings['GENERATE_MODULEMAP_FILE'] = 'YES'
+                          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+                          config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+                          config.build_settings['OTHER_SWIFT_FLAGS'] ||= ['']
+                          config.build_settings['OTHER_SWIFT_FLAGS'] << '-no-verify-emitted-module-interface'
+                          
+                        end
+                      end
+                      
+                      react_native_post_install(installer, config[:reactNativePath], mac_catalyst_enabled: false)
+                      
+                      
+                    end
 end
