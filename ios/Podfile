@@ -5,7 +5,7 @@ ENV['HERMES_ENGINE_TARBALL'] = '0'  # 禁用 Hermes 预构建包，优先源码�
 
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 
-platform :ios, '15.0'
+platform :ios, '16.0'
 prepare_react_native_project!
 
 #linkage = ENV['USE_FRAMEWORKS']
@@ -22,11 +22,12 @@ target 'Eason_20250526_ReactNative' do
   use_react_native!(
     :path => config[:reactNativePath],
     :app_path => "#{Pod::Config.instance.installation_root}/..",
-    :hermes_enabled => true # 显式启用 Hermes，确保与 ENV 配置一致
+    :hermes_enabled => false # 显式启用 Hermes，确保与 ENV 配置一致
   )
                     
                     pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
-                    
+                    pod 'react-native-compressor', :path => '../node_modules/react-native-compressor', :modular_headers => true
+                    pod 'React-jsc', :path => '../node_modules/react-native/ReactCommon/jsc', :modular_headers => true
                     post_install do |installer|
                       installer.pods_project.targets.each do |target|
                         next unless target.respond_to?(:build_configurations)
